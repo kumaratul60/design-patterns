@@ -178,3 +178,6 @@ function LikeButton() {
 | Best Use Case         | UX-first interactions | Critical actions   |
 
 ---
+
+
+<!-- https://github.com/tapascript/15-days-of-react-design-patterns/tree/main/day-08/optimistic-pattern/src -->
