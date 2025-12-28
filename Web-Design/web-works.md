@@ -16,9 +16,9 @@ Keep this chain in your head.
 
 ### 1.0 Full Forms
 
-* **TLD** → **Top-Level Domain** (e.g. `.com`, `.org`, `.edu`, `.in`)
-* **SLD** → **Second-Level Domain** (e.g. `google.com`, `microsoft.com`)
-* **Third-Level Domain** → Commonly called **Subdomain** (e.g. `www.google.com`, `mail.google.com`)
+- **TLD** → **Top-Level Domain** (e.g. `.com`, `.org`, `.edu`, `.in`)
+- **SLD** → **Second-Level Domain** (e.g. `google.com`, `microsoft.com`)
+- **Third-Level Domain** → Commonly called **Subdomain** (e.g. `www.google.com`, `mail.google.com`)
 
 ### 1.1 Domain hierarchy
 
@@ -29,15 +29,15 @@ Keep this chain in your head.
         └── Subdomain → www.google.com, docs.google.com
 ```
 
-* **Root (.)**: implicit, never typed
-* **TLD**: managed by registries (via ICANN)
-* **SLD**: what companies buy
-* **Subdomain**: logical routing (www, api, cdn)
+- **Root (.)**: implicit, never typed
+- **TLD**: managed by registries (via ICANN)
+- **SLD**: what companies buy
+- **Subdomain**: logical routing (www, api, cdn)
 
 ### 1.2 Domain → IP
 
-* Human‑readable → machine‑readable
-* Example:
+- Human‑readable → machine‑readable
+- Example:
 
 ```
 www.google.com → 142.250.198.78 (IPv4)
@@ -89,10 +89,10 @@ If found → **network is skipped entirely**.
 
 ### 3.1 Domain → IP Mapping Authority
 
-* Domain ↔ IP guidelines governed by **ICANN**
-* Registrars & ISPs must follow ICANN policies
-* **WHOIS** exposes domain metadata
-* **WHOIS Privacy Protection** hides owner identity
+- Domain ↔ IP guidelines governed by **ICANN**
+- Registrars & ISPs must follow ICANN policies
+- **WHOIS** exposes domain metadata
+- **WHOIS Privacy Protection** hides owner identity
 
 ### 3.1 DNS lookup flow
 
@@ -105,14 +105,14 @@ Browser
          → Authoritative DNS (google.com)
 ```
 
-* Result is cached at multiple layers
-* TTL controls cache lifetime
+- Result is cached at multiple layers
+- TTL controls cache lifetime
 
 ### 3.2 Peering (why Google is fast)
 
-* **Peering** = fewer network hops
-* Google, Cloudflare, Meta peer directly with ISPs
-* Result: lower latency, faster TTFB
+- **Peering** = fewer network hops
+- Google, Cloudflare, Meta peer directly with ISPs
+- Result: lower latency, faster TTFB
 
 ---
 
@@ -128,9 +128,9 @@ Client  →  ACK
 
 Purpose:
 
-* Confirms both sides are reachable
-* Establishes sequence numbers
-* Enables retransmission & ordering
+- Confirms both sides are reachable
+- Establishes sequence numbers
+- Enables retransmission & ordering
 
 > Used by **HTTP/1.1**, **HTTP/2**, **HTTPS**, **WebSocket**
 
@@ -149,8 +149,8 @@ Purpose:
 
 After this:
 
-* All data uses **symmetric encryption** (fast)
-* No one can read packets in transit
+- All data uses **symmetric encryption** (fast)
+- No one can read packets in transit
 
 > TLS happens **after TCP**, before HTTP data
 
@@ -174,9 +174,9 @@ Client
 
 Before hitting the network:
 
-* Browser **Memory Cache / Disk Cache**
-* **Service Worker cache** (if present)
-* **OS‑level DNS cache**
+- Browser **Memory Cache / Disk Cache**
+- **Service Worker cache** (if present)
+- **OS‑level DNS cache**
 
 If found → **network call skipped**
 
@@ -189,12 +189,12 @@ Host: example.com
 
 ### 6.2 Response streaming (important correction)
 
-* Data is **not fixed to 14kb / 28kb / 56kb**
-* Chunking depends on:
+- Data is **not fixed to 14kb / 28kb / 56kb**
+- Chunking depends on:
 
-  * TCP congestion window
-  * RTT
-  * OS & browser tuning
+  - TCP congestion window
+  - RTT
+  - OS & browser tuning
 
 Correct mental model:
 
@@ -206,8 +206,8 @@ Correct mental model:
 
 ### 7.1 Parallel Network Requests
 
-* Browsers allow **~6–8 parallel connections per origin**
-* Extra requests are **queued**
+- Browsers allow **~6–8 parallel connections per origin**
+- Extra requests are **queued**
 
 You can inspect this at:
 
@@ -219,8 +219,8 @@ This delay appears as **Resource Scheduling Queueing**
 
 ### 7.1 Parallel requests
 
-* Browsers allow ~**6–8 parallel connections per origin**
-* Excess requests are **queued**
+- Browsers allow ~**6–8 parallel connections per origin**
+- Excess requests are **queued**
 
 You can see this in:
 
@@ -234,8 +234,8 @@ DevTools → Network → Timing → Queueing
 
 ### 8.1 Parsing HTML
 
-* HTML is parsed **top‑down**
-* Tokens → Nodes → **DOM Tree**
+- HTML is parsed **top‑down**
+- Tokens → Nodes → **DOM Tree**
 
 ```
 html
@@ -253,28 +253,28 @@ html
 
 ### 9.1 CSSOM
 
-* CSS is parsed into **CSSOM**
-* Represents computed styles
+- CSS is parsed into **CSSOM**
+- Represents computed styles
 
 ### 9.2 Blocking Rules
 
-* **CSS is Render‑Blocking**
+- **CSS is Render‑Blocking**
 
-  * Browser cannot paint pixels without final styles
-  * Render tree waits for CSSOM
+  - Browser cannot paint pixels without final styles
+  - Render tree waits for CSSOM
 
-* **JavaScript is Parser‑Blocking**
+- **JavaScript is Parser‑Blocking**
 
-  * JS can modify DOM/CSSOM
-  * HTML parsing pauses until JS executes
-  * Exceptions:
+  - JS can modify DOM/CSSOM
+  - HTML parsing pauses until JS executes
+  - Exceptions:
 
-    * `defer` → runs after DOM is parsed
-    * `async` → runs as soon as downloaded (race)
+    - `defer` → runs after DOM is parsed
+    - `async` → runs as soon as downloaded (race)
 
-* Browser **cannot paint without styles**
+- Browser **cannot paint without styles**
 
-* Hence: **CSS = render‑blocking**
+- Hence: **CSS = render‑blocking**
 
 ---
 
@@ -282,8 +282,8 @@ html
 
 ### 10.1 Why JS blocks parsing
 
-* JS can mutate DOM
-* Browser must pause parsing to execute
+- JS can mutate DOM
+- Browser must pause parsing to execute
 
 ### 10.2 Script attributes
 
@@ -305,13 +305,13 @@ Golden rule:
 
 Included:
 
-* Visible DOM nodes
-* Computed styles
+- Visible DOM nodes
+- Computed styles
 
 Excluded:
 
-* `display: none`
-* `<head>` elements
+- `display: none`
+- `<head>` elements
 
 > DOM ≠ Render Tree
 
@@ -321,19 +321,19 @@ Excluded:
 
 ### 12.1 What layout does
 
-* Calculates:
+- Calculates:
 
-  * width / height
-  * position
-  * box model
+  - width / height
+  - position
+  - box model
 
 ### 12.2 What triggers reflow
 
-* Changing:
+- Changing:
 
-  * width / height
-  * position / float
-  * font size
+  - width / height
+  - position / float
+  - font size
 
 Reflow is **expensive**.
 
@@ -341,21 +341,21 @@ Reflow is **expensive**.
 
 ## 13. Paint
 
-* Converts boxes → pixels
-* Text, colors, borders, shadows
+- Converts boxes → pixels
+- Text, colors, borders, shadows
 
 Changing these triggers **repaint only**:
 
-* color
-* background
-* visibility
+- color
+- background
+- visibility
 
 ---
 
 ## 14. Compositing
 
-* Layers sent to GPU
-* Transforms & opacity handled here
+- Layers sent to GPU
+- Transforms & opacity handled here
 
 Best for animations:
 
@@ -383,9 +383,9 @@ opacity
 | --------------------- | -------- | -------------------- | ---------- |
 | Transport             | TCP      | TCP                  | UDP (QUIC) |
 | Head‑of‑Line Blocking | Yes      | Fixed (multiplexing) | No         |
-| Multiplexing          | ❌        | ✅                    | ✅          |
-| TLS Required          | ❌        | ❌                    | ✅          |
-| Mobile Friendly       | ❌        | ⚠️                   | ✅          |
+| Multiplexing          | ❌       | ✅                   | ✅         |
+| TLS Required          | ❌       | ❌                   | ✅         |
+| Mobile Friendly       | ❌       | ⚠️                   | ✅         |
 
 ---
 
@@ -393,15 +393,15 @@ opacity
 
 ### 17.1 Peering
 
-* Direct ISP ↔ provider connections
-* Fewer hops = lower latency
-* Google, Cloudflare excel at peering
+- Direct ISP ↔ provider connections
+- Fewer hops = lower latency
+- Google, Cloudflare excel at peering
 
 ### 17.2 ICANN & WHOIS
 
-* **ICANN** governs domain ↔ IP mapping rules
-* WHOIS privacy hides owner details
-* ISPs & registrars follow ICANN policies
+- **ICANN** governs domain ↔ IP mapping rules
+- WHOIS privacy hides owner details
+- ISPs & registrars follow ICANN policies
 
 ---
 
@@ -427,24 +427,25 @@ Request page
 
 ## 17. Key Mental Models (Memorize These)
 
-* **HTML builds DOM**
-* **CSS builds CSSOM**
-* **DOM + CSSOM = Render Tree**
-* **JS blocks parser (unless defer/async)**
-* **CSS blocks rendering**
-* **Layout is expensive, paint is cheaper**
-* **Transform/opacity are GPU‑friendly**
+- **HTML builds DOM**
+- **CSS builds CSSOM**
+- **DOM + CSSOM = Render Tree**
+- **JS blocks parser (unless defer/async)**
+- **CSS blocks rendering**
+- **Layout is expensive, paint is cheaper**
+- **Transform/opacity are GPU‑friendly**
+- **Critical Rendering Path (CRP)** = Render Tree → Layout → Paint → Composite
 
 ---
 
 ## 18. Advanced Tips
 
-* Inline critical CSS
-* Defer non‑critical JS
-* Reduce DOM size
-* Avoid layout thrashing
-* Use HTTP/2 or HTTP/3
-* Prefer CDN + peering
+- Inline critical CSS
+- Defer non‑critical JS
+- Reduce DOM size
+- Avoid layout thrashing
+- Use HTTP/2 or HTTP/3
+- Prefer CDN + peering
 
 ---
 
