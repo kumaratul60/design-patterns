@@ -148,6 +148,9 @@ React-specific patterns for **scalable, maintainable UI architecture**.
 
 ---
 
+## WEB-Design
+- **[How Web works](Web-Design/web-works.md)**
+
 ## Getting Started
 
 - Start with `Design-Patterns/` for core concepts
