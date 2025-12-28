@@ -426,7 +426,7 @@ Request page
 
 ---
 
-## 17. Key Mental Models (Memorize These)
+## 17. Key Mental Models
 
 - **HTML builds DOM**
 - **CSS builds CSSOM**
@@ -455,3 +455,319 @@ Request page
 > The web is a carefully staged pipeline where **networking latency, parsing order, and rendering cost** decide how fast users see pixels.
 
 ---
+
+## 1. Big Picture
+
+```mermaid
+flowchart LR
+    URL --> DNS --> TCP --> TLS --> HTTP
+    HTTP --> HTML
+    HTTP --> CSS
+    HTTP --> JS
+    HTML --> DOM
+    CSS --> CSSOM
+    DOM --> RenderTree
+    CSSOM --> RenderTree
+    RenderTree --> Layout --> Paint --> Composite
+
+```
+
+---
+
+## 2. Browser Pre-Checks
+
+```mermaid
+graph LR
+    A["User hits Enter"] --> B["Browser Cache"]
+    B -- "Miss" --> C["Service Worker Cache"]
+    C -- "Miss" --> D["OS DNS Cache"]
+    D -- "Miss" --> E["Network Request"]
+
+    style A fill:blue,stroke:darkblue
+    style E fill:orange,stroke:darkred
+```
+
+**Takeaway:** network is last resort.
+
+---
+
+## 3. Full Request Flow
+
+```mermaid
+flowchart LR
+    Client --> Router --> ISP --> DNS --> Server
+    Server --> Assets[HTML / CSS / JS / Images]
+    Assets --> Client
+```
+
+---
+
+## 4. DNS Resolution
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Router
+    participant ISP
+    participant RootDNS
+    participant TLDDNS
+    participant AuthDNS
+
+    Client->>Router: DNS Query
+    Router->>ISP: Forward
+    ISP->>RootDNS: Where is TLD?
+    RootDNS->>TLDDNS: Ask TLD
+    TLDDNS->>AuthDNS: Ask domain
+    AuthDNS-->>Client: IP Address
+```
+
+---
+
+## 5. TCP 3-Way Handshake
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+
+    Client->>Server: SYN
+    Server-->>Client: SYN + ACK
+    Client->>Server: ACK
+```
+
+**RTT cost:** 1 RTT
+
+---
+
+## 6. TLS Handshake
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+
+    Client->>Server: ClientHello
+    Server-->>Client: Certificate + Public Key
+    Client->>Server: Encrypted Session Key
+    Note over Client,Server: Secure channel established
+```
+
+---
+
+## 7. 1-RTT vs Multi-RTT
+
+```mermaid
+graph LR
+    subgraph MultiRTT ["Multi-RTT (HTTPS Cold Start)"]
+        A1["TCP Handshake"] --> A2["TLS Handshake"]
+        A2 --> A3["HTTP Request"]
+    end
+
+    %% Hidden link to force subgraphs to be side-by-side LR
+    A3 ~~~ B1
+
+    subgraph OneRTT ["1-RTT (HTTP/3 / QUIC)"]
+        B1["Request + Response"]
+    end
+
+    %% Simple styling that won't break the parser
+    style MultiRTT fill:#f9f9f9,stroke:#333
+    style OneRTT fill:#e1f5fe,stroke:#01579b
+```
+
+---
+
+## 8. Critical Rendering Path
+
+```mermaid
+graph LR
+    %% Parsing Phase
+    HTML["HTML"] --> DOM["DOM Tree"]
+    CSS["CSS"] --> CSSOM["CSSOM Tree"]
+
+    %% Merging Phase
+    DOM --> RT["Render Tree"]
+    CSSOM --> RT
+
+    %% Visual Pipeline Phase
+    RT --> Layout["Layout (Reflow)"]
+    Layout --> Paint["Paint"]
+    Paint --> Comp["Composite"]
+
+    %% Compatibility Styling
+    style HTML fill:white,stroke:gray
+    style CSS fill:white,stroke:gray
+    style RT fill:blue,stroke:darkblue
+    style Comp fill:orange,stroke:darkred
+```
+
+---
+
+## Web Protocol Comparison Diagram
+
+```mermaid
+classDiagram
+    class Protocol {
+        <<Interface>>
+        +String Layer
+        +String Transport
+        +String Port
+        +HowItWorks()
+        +UseCases()
+    }
+
+    class HTTP {
+        +Layer: 7 (Application)
+        +Transport: TCP
+        +Port: 80
+        +Mechanism: Stateless Request/Response
+        +UseCases: Web Browsing, REST APIs
+    }
+
+    class HTTPS {
+        +Layer: 7 (Application)
+        +Transport: TCP + TLS/SSL
+        +Port: 443
+        +Mechanism: TCP Handshake -> TLS Handshake (Public Key -> Session Key)
+        +UseCases: Secure Banking, E-commerce
+    }
+
+    class HTTP3_QUIC {
+        +Layer: 7 / 4 Hybrid
+        +Transport: UDP
+        +Port: 443
+        +Mechanism: 0-RTT Handshake, Multiplexing (No Head-of-Line Blocking)
+        +UseCases: VR/AR, IoT, High-speed Web
+    }
+
+    class WebSocket {
+        +Layer: 7 (Application)
+        +Transport: TCP
+        +Port: 80/443
+        +Mechanism: HTTP Upgrade -> Persistent Full-Duplex
+        +UseCases: Live Chat, Real-time Trading, Gaming
+    }
+
+    class TCP {
+        +Layer: 4 (Transport)
+        +Mechanism: 3-Way Handshake (SYN -> SYN+ACK -> ACK)
+        +Features: Reliable, Ordered delivery, Retransmission
+        +UseCases: Email, Web, File Transfer
+    }
+
+    class UDP {
+        +Layer: 4 (Transport)
+        +Mechanism: Fire-and-Forget (No Handshake)
+        +Features: Low Latency, Unreliable, Fast
+        +UseCases: Video Calls, Streaming, Gaming
+    }
+
+    class SMTP {
+        +Layer: 7 (Application)
+        +Transport: TCP
+        +Port: 25, 587
+        +Mechanism: Push Protocol (Sender -> SMTP Server -> Receiver)
+        +UseCases: Sending Emails
+    }
+
+    class FTP {
+        +Layer: 7 (Application)
+        +Transport: TCP
+        +Port: 21 (Control), 20 (Data)
+        +Mechanism: Dual-Channel (Control vs Data)
+        +UseCases: Uploading/Downloading large files
+    }
+
+    HTTP --|> Protocol
+    HTTPS --|> Protocol
+    HTTP3_QUIC --|> Protocol
+    WebSocket --|> Protocol
+    TCP --|> Protocol
+    UDP --|> Protocol
+    SMTP --|> Protocol
+    FTP --|> Protocol
+
+```
+
+---
+
+### Detailed Breakdown of "How It Works"
+
+| Protocol      | How It Works (Step-by-Step)                     | Advanced Technical Detail                                                           |
+| :------------ | :---------------------------------------------- | :---------------------------------------------------------------------------------- |
+| **HTTP**      | `TCP Connection` ➔ `Request` ➔ `Response`       | **Stateless:** Each request is independent; uses Cookies/Sessions for state.        |
+| **HTTP/3**    | `UDP Connection` ➔ `QUIC Handshake` ➔ `Streams` | **Zero-RTT:** Reconnecting to a known server requires 0 round trips.                |
+| **HTTPS**     | `TCP` ➔ `Certificate Verify` ➔ `Key Exchange`   | **PFS:** Uses _Perfect Forward Secrecy_ so old leaked keys can't decrypt past data. |
+| **WebSocket** | `HTTP GET + Upgrade Header` ➔ `101 Switching`   | **Persistent:** Stays open indefinitely until one side closes it.                   |
+| **TCP**       | `SYN` ➔ `SYN + ACK` ➔ `ACK`                     | **Congestion Control:** Automatically slows down if the network is busy.            |
+| **UDP**       | `Source IP/Port` ➔ `Target IP/Port`             | **Check-sum only:** No delivery guarantee; packets can arrive out of order.         |
+| **SMTP**      | `HELO/EHLO` ➔ `MAIL FROM` ➔ `RCPT TO`           | **Relay:** Designed to jump between servers until it reaches the destination.       |
+| **FTP**       | `Auth on Port 21` ➔ `Transfer on Port 20`       | **Active vs Passive:** Can be blocked by firewalls depending on the mode.           |
+
+### Key Takeaways for Mental Model:
+
+1.  **Transport is the Foundation:** All "Application" protocols (HTTP, SMTP, FTP) must choose between **TCP** (Reliable/Slow) or **UDP** (Fast/Unreliable).
+2.  **The "Nonce" connection:** In HTTPS (and Web security like CSP), **Nonces** are random numbers used to ensure that a cryptographic session or a script tag is unique and cannot be replayed by a hacker.
+3.  **HTTP/3 is the Future:** By moving to UDP (QUIC), it fixes the "Head-of-Line Blocking" problem where one slow packet used to freeze the entire website load.
+
+## The 7 OSI (Open Systems Interconnection) Layers (Brief Intro)
+
+- **Layer 7: Application** – The "Interface" (What you see: HTTP, WebSocket, SMTP).
+- **Layer 6: Presentation** – The "Translator" (Encryption/SSL, Compression).
+- **Layer 5: Session** – The "Manager" (Starts/Stops conversations).
+- **Layer 4: Transport** – The "Courier" (Reliable TCP vs. Fast UDP).
+- **Layer 3: Network** – The "Navigator" (IP addresses and Routing).
+- **Layer 2: Data Link** – The "Bridge" (Local hardware, MAC addresses).
+- **Layer 1: Physical** – The "Wire" (Electrical signals, cables, bits).
+
+---
+
+### Protocol to OSI Mapping
+
+```mermaid
+%%{init: {'flowchart': {'nodeSpacing': 120, 'rankSpacing': 70, 'padding': 30}}}%%
+flowchart TD
+    subgraph L7 ["Layer 7: Application (The User Interface)"]
+        direction LR
+        P1[HTTP] --- P2[HTTPS] --- P3[WebSocket] --- P4[SMTP] --- P5[FTP]
+    end
+
+    subgraph L6 ["Layer 6: Presentation (Data Format & Security)"]
+        direction LR
+        S1[SSL/TLS Encryption] --- S2[JSON/XML Encoding]
+    end
+
+    subgraph L5 ["Layer 5: Session (Communication Management)"]
+        direction LR
+        SC[NetBIOS / RPC / Sockets]
+    end
+
+    subgraph L4 ["Layer 4: Transport (End-to-End Reliability)"]
+        direction LR
+        T1[TCP - Reliable] --- T2[UDP - Fast] --- T3[QUIC - HTTP/3]
+    end
+
+    subgraph L3 ["Layer 3: Network (Routing & IP)"]
+        direction LR
+        N1[IPv4 / IPv6] --- N2[ICMP / Routers]
+    end
+
+    subgraph L2 ["Layer 2: Data Link (Local Connections)"]
+        direction LR
+        D1[Ethernet] --- D2[Wi-Fi] --- D3[MAC Addresses]
+    end
+
+    subgraph L1 ["Layer 1: Physical (Hardware)"]
+        direction LR
+        Ph1[Cables] --- Ph2[Fiber Optics] --- Ph3[Radio Waves]
+    end
+
+    %% Vertical connections between layers
+    L7 ==> L6 ==> L5 ==> L4 ==> L3 ==> L2 ==> L1
+```
+
+### Why this matters for "How the Web Works":
+
+1.  **Top-Down Execution:** When you type a URL, the data starts at **L7 (HTTP)**, gets encrypted at **L6 (TLS)**, and is broken into segments at **L4 (TCP)** before traveling down the physical wire.
+2.  **Troubleshooting:** If your "Internet is down," it's usually **L1 or L2** (cable unplugged). If the "Website is slow," it's usually **L4 (TCP Congestion)** or **L7 (Heavy JS code)**.
+3.  **Encapsulation:** Every layer adds its own "header" (metadata) to the data packet as it moves down. When it reaches the server, the server peels these headers off one by one (Decapsulation) to see the original request.
