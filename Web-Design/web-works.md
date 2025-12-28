@@ -725,7 +725,7 @@ classDiagram
 ### Protocol to OSI Mapping
 
 ```mermaid
-%%{init: {'flowchart': {'nodeSpacing': 120, 'rankSpacing': 70, 'padding': 30}}}%%
+%%{init: {'flowchart': {'nodeSpacing': 90, 'rankSpacing': 90, 'padding': 30}}}%%
 flowchart TD
     subgraph L7 ["Layer 7: Application (The User Interface)"]
         direction LR
