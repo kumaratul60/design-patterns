@@ -191,10 +191,11 @@ Host: example.com
 
 - Data is **not fixed to 14kb / 28kb / 56kb**
 - Chunking depends on:
-
-  - TCP congestion window
-  - RTT
-  - OS & browser tuning
+  - TCP Congestion Window (cwnd)
+  - RTT (Round-Trip Time)
+  - OS TCP stack tuning
+  - Browser networking implementation
+  - Lower RTT = faster page loads
 
 Correct mental model:
 
