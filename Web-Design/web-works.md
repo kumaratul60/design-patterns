@@ -218,7 +218,7 @@ DevTools → Network → Timing → Queueing
 
 This delay appears as **Resource Scheduling Queueing**
 
-### 7.1 Parallel requests
+### 7.2 Parallel requests
 
 - Browsers allow ~**6–8 parallel connections per origin**
 - Excess requests are **queued**
