@@ -94,7 +94,7 @@ If found → **network is skipped entirely**.
 - **WHOIS** exposes domain metadata
 - **WHOIS Privacy Protection** hides owner identity
 
-### 3.1 DNS lookup flow
+### 3.2 DNS lookup flow
 
 ```
 Browser
@@ -108,7 +108,7 @@ Browser
 - Result is cached at multiple layers
 - TTL controls cache lifetime
 
-### 3.2 Peering (why Google is fast)
+### 3.3 Peering (why Google is fast)
 
 - **Peering** = fewer network hops
 - Google, Cloudflare, Meta peer directly with ISPs
@@ -158,7 +158,7 @@ After this:
 
 ## 6. HTTP Request & Response
 
-### 6.0 Client → Server Data Flow
+### 6.1 Client → Server Data Flow
 
 ```
 Client
@@ -170,7 +170,7 @@ Client
            ← streamed back to client
 ```
 
-### 6.1 Browser Pre‑Request Checks
+### 6.2 Browser Pre‑Request Checks
 
 Before hitting the network:
 
@@ -180,14 +180,14 @@ Before hitting the network:
 
 If found → **network call skipped**
 
-### 6.1 HTTP request
+### 6.3 HTTP request
 
 ```
 GET /index.html HTTP/1.1
 Host: example.com
 ```
 
-### 6.2 Response streaming (important correction)
+### 6.4 Response streaming (important correction)
 
 - Data is **not fixed to 14kb / 28kb / 56kb**
 - Chunking depends on:
