@@ -1,6 +1,91 @@
-# How the Web Works
+# How the Web Works: From URL to Pixels
 
-> A clear, end‑to‑end mental model of what happens from **typing a URL** to **pixels on the screen**.
+> A clear, end‑to‑end mental model of what happens from **typing a URL** to **pixels on the screen**. This guide is structured progressively: beginners can focus on early sections, while advanced readers will appreciate the deep technical details and diagrams.
+
+## Table of Contents
+
+- [How the Web Works: From URL to Pixels](#how-the-web-works-from-url-to-pixels)
+  - [Table of Contents](#table-of-contents)
+  - [0. Big Picture](#0-big-picture)
+  - [1. Understanding Domains \& URLs](#1-understanding-domains--urls)
+    - [1.0 Full Forms](#10-full-forms)
+    - [1.1 Domain hierarchy](#11-domain-hierarchy)
+    - [1.2 Domain → IP](#12-domain--ip)
+  - [2. What Happens When You Hit Enter](#2-what-happens-when-you-hit-enter)
+    - [2.1 Browser Pre‑Checks (Before Network)](#21-browser-prechecks-before-network)
+    - [2.2 Full Request Flow (High Level)](#22-full-request-flow-high-level)
+    - [2.1 Pre‑request checks (very important)](#21-prerequest-checks-very-important)
+  - [3. DNS Resolution (Name → IP)](#3-dns-resolution-name--ip)
+    - [3.1 Domain → IP Mapping Authority](#31-domain--ip-mapping-authority)
+    - [3.2 DNS lookup flow](#32-dns-lookup-flow)
+    - [3.3 Peering (why Google is fast)](#33-peering-why-google-is-fast)
+  - [4. Transport Layer (Connection Setup)](#4-transport-layer-connection-setup)
+    - [4.1 TCP 3‑Way Handshake (Guaranteed Delivery)](#41-tcp-3way-handshake-guaranteed-delivery)
+  - [5. Security Layer (TLS / SSL)](#5-security-layer-tls--ssl)
+    - [5.1 Encryption / Decryption Flow (HTTPS)](#51-encryption--decryption-flow-https)
+  - [6. HTTP Request \& Response](#6-http-request--response)
+    - [6.1 Client → Server Data Flow](#61-client--server-data-flow)
+    - [6.2 Browser Pre‑Request Checks](#62-browser-prerequest-checks)
+    - [6.3 HTTP request](#63-http-request)
+    - [6.4 Response streaming (important correction)](#64-response-streaming-important-correction)
+  - [7. Browser Resource Scheduling](#7-browser-resource-scheduling)
+    - [7.1 Parallel Network Requests](#71-parallel-network-requests)
+    - [7.2 Parallel requests](#72-parallel-requests)
+  - [8. HTML Parsing → DOM](#8-html-parsing--dom)
+    - [8.1 Parsing HTML](#81-parsing-html)
+  - [9. CSS Parsing → CSSOM](#9-css-parsing--cssom)
+    - [9.1 CSSOM](#91-cssom)
+    - [9.2 Blocking Rules](#92-blocking-rules)
+  - [10. JavaScript Loading \& Execution](#10-javascript-loading--execution)
+    - [10.1 Why JS blocks parsing](#101-why-js-blocks-parsing)
+    - [10.2 Script attributes](#102-script-attributes)
+  - [11. DOM + CSSOM → Render Tree](#11-dom--cssom--render-tree)
+    - [11.1 Render Tree rules](#111-render-tree-rules)
+  - [12. Layout (Reflow)](#12-layout-reflow)
+    - [12.1 What layout does](#121-what-layout-does)
+    - [12.2 What triggers reflow](#122-what-triggers-reflow)
+  - [13. Paint](#13-paint)
+  - [14. Compositing](#14-compositing)
+  - [15. Performance Milestones](#15-performance-milestones)
+  - [16. HTTP Versions Comparison](#16-http-versions-comparison)
+  - [17. Peering \& ICANN](#17-peering--icann)
+    - [17.1 Peering](#171-peering)
+    - [17.2 ICANN \& WHOIS](#172-icann--whois)
+  - [18. Complete Timeline (Condensed)](#18-complete-timeline-condensed)
+  - [19. Key Mental Models](#19-key-mental-models)
+  - [20. Advanced Tips](#20-advanced-tips)
+  - [21. Final One‑Sentence Summary](#21-final-onesentence-summary)
+  - [22. Big Picture Visualization](#22-big-picture-visualization)
+  - [23. Browser Pre-Checks Visualization](#23-browser-pre-checks-visualization)
+  - [24. Full Request Flow Visualization](#24-full-request-flow-visualization)
+  - [25. DNS Resolution Visualization](#25-dns-resolution-visualization)
+  - [26. TCP 3-Way Handshake Visualization](#26-tcp-3-way-handshake-visualization)
+  - [27. TLS Handshake Visualization](#27-tls-handshake-visualization)
+  - [28. 1-RTT vs Multi-RTT Visualization](#28-1-rtt-vs-multi-rtt-visualization)
+  - [29. Critical Rendering Path Visualization](#29-critical-rendering-path-visualization)
+  - [30. Web Protocol Comparison Diagram](#30-web-protocol-comparison-diagram)
+    - [Detailed Breakdown of "How It Works"](#detailed-breakdown-of-how-it-works)
+    - [Key Takeaways for Mental Model:](#key-takeaways-for-mental-model)
+  - [The 7 OSI (Open Systems Interconnection) Layers (Brief Intro)](#the-7-osi-open-systems-interconnection-layers-brief-intro)
+    - [Protocol to OSI Mapping](#protocol-to-osi-mapping)
+    - [Why this matters for "How the Web Works":](#why-this-matters-for-how-the-web-works)
+  - [31. Web Architecture Concepts for Advanced Readers](#31-web-architecture-concepts-for-advanced-readers)
+    - [31.1 Client-Server Architecture](#311-client-server-architecture)
+    - [31.2 Single Page Applications (SPAs)](#312-single-page-applications-spas)
+    - [31.3 Server-Side Rendering (SSR) \& Static Site Generation (SSG)](#313-server-side-rendering-ssr--static-site-generation-ssg)
+    - [31.4 Progressive Web Apps (PWAs)](#314-progressive-web-apps-pwas)
+    - [31.5 Microservices \& APIs](#315-microservices--apis)
+    - [31.6 Content Delivery Networks (CDNs)](#316-content-delivery-networks-cdns)
+    - [31.7 Scalability Considerations](#317-scalability-considerations)
+  - [References \& Further Reading](#references--further-reading)
+
+---
+
+**Reader Levels Guide:**
+
+- **Beginner**: Focus on sections 0-7 for basic understanding of how the web works.
+- **Intermediate**: Sections 8-15 for browser internals and rendering.
+- **Advanced**: Sections 16+ for deep protocol details, optimizations, and visualizations.
 
 ---
 
@@ -13,6 +98,8 @@ Keep this chain in your head.
 ---
 
 ## 1. Understanding Domains & URLs
+
+**Beginner Note:** Domains are website names like 'google.com'. URLs are full addresses including 'https://'. This section explains the parts.
 
 ### 1.0 Full Forms
 
@@ -86,6 +173,8 @@ If found → **network is skipped entirely**.
 ---
 
 ## 3. DNS Resolution (Name → IP)
+
+**Intermediate Note:** DNS translates human-readable names to machine IPs. It's like looking up a phone number from a name.
 
 ### 3.1 Domain → IP Mapping Authority
 
@@ -376,6 +465,9 @@ opacity
 | LCP    | Largest content       |
 | TTI    | Page usable           |
 
+**Beginner Note:** These are key points in loading a webpage. FCP is when you first see something on screen.
+**Advanced Note:** Use Chrome DevTools or Web Vitals to measure these. Aim for LCP under 2.5s for good UX.
+
 ---
 
 ## 16. HTTP Versions Comparison
@@ -387,6 +479,8 @@ opacity
 | Multiplexing          | ❌       | ✅                   | ✅         |
 | TLS Required          | ❌       | ❌                   | ✅         |
 | Mobile Friendly       | ❌       | ⚠️                   | ✅         |
+
+**Advanced Note:** HTTP/3 uses QUIC over UDP for faster, more reliable connections, especially on unstable networks like mobile.
 
 ---
 
@@ -426,7 +520,7 @@ Request page
 
 ---
 
-## 17. Key Mental Models
+## 19. Key Mental Models
 
 - **HTML builds DOM**
 - **CSS builds CSSOM**
@@ -439,7 +533,7 @@ Request page
 
 ---
 
-## 18. Advanced Tips
+## 20. Advanced Tips
 
 - Inline critical CSS
 - Defer non‑critical JS
@@ -450,13 +544,15 @@ Request page
 
 ---
 
-## 19. Final One‑Sentence Summary
+## 21. Final One‑Sentence Summary
 
 > The web is a carefully staged pipeline where **networking latency, parsing order, and rendering cost** decide how fast users see pixels.
 
+**All Levels:** This summary captures the essence – optimize each step for better performance!
+
 ---
 
-## 1. Big Picture
+## 22. Big Picture Visualization
 
 ```mermaid
 flowchart LR
@@ -472,9 +568,11 @@ flowchart LR
 
 ```
 
+**Beginner Friendly:** This diagram shows how browsers try to avoid slow network requests by checking local caches first.
+
 ---
 
-## 2. Browser Pre-Checks
+## 23. Browser Pre-Checks Visualization
 
 ```mermaid
 graph LR
@@ -491,7 +589,7 @@ graph LR
 
 ---
 
-## 3. Full Request Flow
+## 24. Full Request Flow Visualization
 
 ```mermaid
 flowchart LR
@@ -500,9 +598,11 @@ flowchart LR
     Assets --> Client
 ```
 
+**Intermediate:** This sequence shows the hierarchical DNS query process, from local to authoritative servers.
+
 ---
 
-## 4. DNS Resolution
+## 25. DNS Resolution Visualization
 
 ```mermaid
 sequenceDiagram
@@ -523,7 +623,7 @@ sequenceDiagram
 
 ---
 
-## 5. TCP 3-Way Handshake
+## 26. TCP 3-Way Handshake Visualization
 
 ```mermaid
 sequenceDiagram
@@ -536,10 +636,11 @@ sequenceDiagram
 ```
 
 **RTT cost:** 1 RTT
+**Advanced Note:** The handshake establishes encrypted communication securely.
 
 ---
 
-## 6. TLS Handshake
+## 27. TLS Handshake Visualization
 
 ```mermaid
 sequenceDiagram
@@ -554,7 +655,7 @@ sequenceDiagram
 
 ---
 
-## 7. 1-RTT vs Multi-RTT
+## 28. 1-RTT vs Multi-RTT Visualization
 
 ```mermaid
 graph LR
@@ -577,7 +678,7 @@ graph LR
 
 ---
 
-## 8. Critical Rendering Path
+## 29. Critical Rendering Path Visualization
 
 ```mermaid
 graph LR
@@ -601,9 +702,11 @@ graph LR
     style Comp fill:orange,stroke:darkred
 ```
 
+**Advanced:** This class diagram compares web protocols and their OSI layer mappings.
+
 ---
 
-## Web Protocol Comparison Diagram
+## 30. Web Protocol Comparison Diagram
 
 ```mermaid
 classDiagram
@@ -771,3 +874,73 @@ flowchart TD
 1.  **Top-Down Execution:** When you type a URL, the data starts at **L7 (HTTP)**, gets encrypted at **L6 (TLS)**, and is broken into segments at **L4 (TCP)** before traveling down the physical wire.
 2.  **Troubleshooting:** If your "Internet is down," it's usually **L1 or L2** (cable unplugged). If the "Website is slow," it's usually **L4 (TCP Congestion)** or **L7 (Heavy JS code)**.
 3.  **Encapsulation:** Every layer adds its own "header" (metadata) to the data packet as it moves down. When it reaches the server, the server peels these headers off one by one (Decapsulation) to see the original request.
+
+---
+
+## 31. Web Architecture Concepts for Advanced Readers
+
+**Advanced Note:** This section bridges the technical pipeline with high-level web architectures, catering to architects and engineers designing scalable systems.
+
+### 31.1 Client-Server Architecture
+
+- **Traditional Model:** Browser (client) requests resources from server. Server responds with HTML/CSS/JS.
+- **Evolution:** From static sites to dynamic apps using APIs (REST, GraphQL).
+
+### 31.2 Single Page Applications (SPAs)
+
+- **How It Works:** Initial load fetches a shell; subsequent navigation updates DOM via JS (e.g., React, Vue).
+- **Pros:** Fast interactions, rich UX.
+- **Cons:** SEO challenges, initial load time. Mitigate with SSR/SSG.
+
+### 31.3 Server-Side Rendering (SSR) & Static Site Generation (SSG)
+
+- **SSR:** Server renders HTML on each request (e.g., Next.js, Nuxt).
+- **SSG:** Pre-renders at build time for static hosting (e.g., Gatsby).
+- **Benefits:** Better SEO, faster perceived load.
+
+### 31.4 Progressive Web Apps (PWAs)
+
+- **Features:** Offline support via Service Workers, installable, push notifications.
+- **Architecture:** Combines web standards with app-like experiences.
+
+### 31.5 Microservices & APIs
+
+- **Decoupled Services:** Backend split into independent services communicating via APIs.
+- **Web Impact:** Faster deployments, but adds complexity in networking (e.g., API gateways, load balancers).
+
+### 31.6 Content Delivery Networks (CDNs)
+
+- **Role:** Distribute content globally to reduce latency (e.g., Cloudflare, Akamai).
+- **Integration:** Cache static assets, edge computing for dynamic content.
+
+### 31.7 Scalability Considerations
+
+- **Horizontal Scaling:** Load balancers distribute traffic.
+- **Caching Layers:** Browser → CDN → Server → Database.
+- **Monitoring:** Use tools like Web Vitals for performance metrics.
+
+**Key Takeaway for Architects:** The web's pipeline (DNS → TCP → HTTP → Render) must align with architecture choices. For global apps, prioritize CDNs and HTTP/3; for interactive apps, optimize CRP and JS bundles.
+
+---
+
+## References & Further Reading
+
+- **General Web Fundamentals**
+  - MDN Web Docs: [How the Web Works](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/How_the_Web_works)
+  - Web.dev: [Critical Rendering Path](https://web.dev/critical-rendering-path/)
+  - "Eloquent JavaScript" by Marijn Haverbeke (for JS basics)
+- **Networking & Protocols**
+  - HTTP/3 Spec: [QUIC Protocol](https://quicwg.org/)
+  - RFC 9114: [HTTP/3](https://tools.ietf.org/html/rfc9114)
+  - "Computer Networking: A Top-Down Approach" by Kurose & Ross
+- **Browser Internals & Performance**
+  - "High Performance Browser Networking" by Ilya Grigorik
+  - Google Developers: [Rendering Performance](https://developers.google.com/web/fundamentals/performance/rendering)
+  - Web.dev: [Web Vitals](https://atulkawasthi.medium.com/react-performance-hacks-make-your-front-end-fly-dca5ab722158)
+- **Security**
+  - OWASP: [Transport Layer Security](https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html)
+  - "Bulletproof SSL and TLS" by Ivan Ristić
+- **Architecture & Best Practices**
+  - Martin Fowler: [Microservices](https://martinfowler.com/microservices/)
+  - "Designing Data-Intensive Applications" by Martin Kleppmann
+  - Web.dev: [Progressive Web Apps](https://web.dev/progressive-web-apps/)
