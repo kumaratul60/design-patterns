@@ -21,7 +21,7 @@
   - [2. What Happens When You Hit Enter](#2-what-happens-when-you-hit-enter)
     - [2.1 Browser Pre‑Checks (Before Network)](#21-browser-prechecks-before-network)
     - [2.2 Full Request Flow (High Level)](#22-full-request-flow-high-level)
-    - [2.1 Pre‑request checks (very important)](#21-prerequest-checks-very-important)
+    - [2.1 Pre‑request checks](#21-prerequest-checks)
   - [3. DNS Resolution (Name → IP)](#3-dns-resolution-name--ip)
     - [3.1 Domain → IP Mapping Authority](#31-domain--ip-mapping-authority)
     - [3.2 DNS lookup flow](#32-dns-lookup-flow)
@@ -61,7 +61,7 @@
   - [18. Complete Timeline (Condensed)](#18-complete-timeline-condensed)
   - [19. Key Mental Models](#19-key-mental-models)
   - [20. Tips](#20-tips)
-  - [21. Final One‑Sentence Summary](#21-final-onesentence-summary)
+  - [21. One‑Sentence Summary about hit to pixel on ui](#21-onesentence-summary-about-hit-to-pixel-on-ui)
   - [22. Big Picture Visualization](#22-big-picture-visualization)
   - [23. Browser Pre-Checks Visualization](#23-browser-pre-checks-visualization)
   - [24. Full Request Flow Visualization](#24-full-request-flow-visualization)
@@ -238,7 +238,7 @@ Client
 
 ```
 
-### 2.1 Pre‑request checks (very important)
+### 2.1 Pre‑request checks
 
 Before any network call:
 
@@ -642,11 +642,11 @@ Request page
 
 ---
 
-## 21. Final One‑Sentence Summary
+## 21. One‑Sentence Summary about hit to pixel on ui
 
 > The web is a carefully staged pipeline where **networking latency, parsing order, and rendering cost** decide how fast users see pixels.
 
-**All Levels:** This summary captures the essence – optimize each step for better performance!
+**Note:** This summary captures the essence – optimize each step for better performance!
 
 ---
 
