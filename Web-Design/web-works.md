@@ -8,6 +8,13 @@
   - [Table of Contents](#table-of-contents)
   - [0. Big Picture](#0-big-picture)
   - [1. Understanding Domains \& URLs](#1-understanding-domains--urls)
+    - [1.0 Key Components of URLs and Domains](#10-key-components-of-urls-and-domains)
+      - [URL Breakdown](#url-breakdown)
+      - [Full URL Example](#full-url-example)
+    - [1.1 Domain Hierarchy and Structure](#11-domain-hierarchy-and-structure)
+    - [1.2 Domain to IP Mapping](#12-domain-to-ip-mapping)
+    - [1.3 URL vs Domain vs IP Comparison](#13-url-vs-domain-vs-ip-comparison)
+    - [1.4 Visual Breakdown of a URL](#14-visual-breakdown-of-a-url)
     - [1.0 Full Forms](#10-full-forms)
     - [1.1 Domain hierarchy](#11-domain-hierarchy)
     - [1.2 Domain → IP](#12-domain--ip)
@@ -53,7 +60,7 @@
     - [17.2 ICANN \& WHOIS](#172-icann--whois)
   - [18. Complete Timeline (Condensed)](#18-complete-timeline-condensed)
   - [19. Key Mental Models](#19-key-mental-models)
-  - [20. Advanced Tips](#20-advanced-tips)
+  - [20. Tips](#20-tips)
   - [21. Final One‑Sentence Summary](#21-final-onesentence-summary)
   - [22. Big Picture Visualization](#22-big-picture-visualization)
   - [23. Browser Pre-Checks Visualization](#23-browser-pre-checks-visualization)
@@ -69,7 +76,7 @@
   - [The 7 OSI (Open Systems Interconnection) Layers (Brief Intro)](#the-7-osi-open-systems-interconnection-layers-brief-intro)
     - [Protocol to OSI Mapping](#protocol-to-osi-mapping)
     - [Why this matters for "How the Web Works":](#why-this-matters-for-how-the-web-works)
-  - [31. Web Architecture Concepts for Advanced Readers](#31-web-architecture-concepts-for-advanced-readers)
+  - [31. Web Architecture Deep Dive](#31-web-architecture-deep-dive)
     - [31.1 Client-Server Architecture](#311-client-server-architecture)
     - [31.2 Single Page Applications (SPAs)](#312-single-page-applications-spas)
     - [31.3 Server-Side Rendering (SSR) \& Static Site Generation (SSG)](#313-server-side-rendering-ssr--static-site-generation-ssg)
@@ -77,7 +84,7 @@
     - [31.5 Microservices \& APIs](#315-microservices--apis)
     - [31.6 Content Delivery Networks (CDNs)](#316-content-delivery-networks-cdns)
     - [31.7 Scalability Considerations](#317-scalability-considerations)
-  - [References \& Further Reading](#references--further-reading)
+  - [References](#references)
 
 ---
 
@@ -99,7 +106,72 @@ Keep this chain in your head.
 
 ## 1. Understanding Domains & URLs
 
-**Beginner Note:** Domains are website names like 'google.com'. URLs are full addresses including 'https://'. This section explains the parts.
+### 1.0 Key Components of URLs and Domains
+
+#### URL Breakdown
+
+- **Protocol** = Rules for data transfer between client and server.
+  - Examples: `http://` → HyperText Transfer Protocol (no encryption); `https://` → HTTP + TLS encryption (secure).
+- **Domain** = Human-readable website name (e.g., google.com).
+- **Subdomain** = Subdivision for routing/organization (e.g., www.google.com, mail.google.com, api.google.com).
+  - **www**: Originally "World Wide Web"; now a conventional subdomain. Note: `google.com` and `www.google.com` may behave differently.
+- **Path** = Specific resource location (e.g., /search).
+- **Query Parameters** = Additional data (e.g., ?q=web).
+- **IP Address** = Machine-readable server address (e.g., 142.250.198.78).
+
+#### Full URL Example
+
+`https://www.google.com/search?q=web`
+
+- `https` → Protocol
+- `www.google.com` → Domain + Subdomain
+- `/search` → Path
+- `?q=web` → Query Parameters
+
+### 1.1 Domain Hierarchy and Structure
+
+```
+. (root)
+└── TLD        → com, org, edu, gov, in, au
+    └── SLD    → google.com, microsoft.com
+        └── Subdomain → www.google.com, docs.google.com
+```
+
+- **Root (.)**: Implicit, never typed.
+- **TLD (Top-Level Domain)**: Managed by registries via ICANN (e.g., .com, .org).
+- **SLD (Second-Level Domain)**: Purchased by companies (e.g., google.com).
+- **Subdomain**: For logical routing (e.g., www, api, cdn).
+
+### 1.2 Domain to IP Mapping
+
+- **Process**: Human-readable domain → Machine-readable IP.
+- **Example**: www.google.com → 142.250.198.78 (IPv4).
+- **Governance**: Managed by ICANN, registrars, and DNS infrastructure.
+
+### 1.3 URL vs Domain vs IP Comparison
+
+| Term       | What it is                     | Human-readable | Example                               |
+| ---------- | ------------------------------ | -------------- | ------------------------------------- |
+| URL        | Complete address of a resource | ✅             | `https://www.google.com/search?q=web` |
+| Domain     | Website name                   | ✅             | `google.com`                          |
+| Subdomain  | Division of a domain           | ✅             | `www.google.com`                      |
+| IP Address | Server's network address       | ❌             | `142.250.198.78`                      |
+
+### 1.4 Visual Breakdown of a URL
+
+```mermaid
+flowchart LR
+    URL["https://www.google.com/search?q=web"]
+    URL --> P[Protocol<br/>https]
+    URL --> D[Domain<br/>google.com]
+    D --> SD[Subdomain<br/>www]
+    URL --> Path[Path<br/>/search]
+    URL --> Q[Query Params<br/>q=web]
+```
+
+**Takeaway:** URL = protocol + domain (+ subdomain) + path + query.
+
+---
 
 ### 1.0 Full Forms
 
@@ -110,10 +182,12 @@ Keep this chain in your head.
 ### 1.1 Domain hierarchy
 
 ```
+
 . (root)
-└── TLD        → com, org, edu, gov, in, au
-    └── SLD    → google.com, microsoft.com
-        └── Subdomain → www.google.com, docs.google.com
+└── TLD → com, org, edu, gov, in, au
+└── SLD → google.com, microsoft.com
+└── Subdomain → www.google.com, docs.google.com
+
 ```
 
 - **Root (.)**: implicit, never typed
@@ -127,7 +201,9 @@ Keep this chain in your head.
 - Example:
 
 ```
+
 www.google.com → 142.250.198.78 (IPv4)
+
 ```
 
 > Mapping governed by **ICANN**, registrars, and DNS infrastructure.
@@ -151,13 +227,15 @@ If found → **network request is skipped**
 ### 2.2 Full Request Flow (High Level)
 
 ```
+
 Client
- → Router
-   → ISP
-     → DNS
-       → Server
-         → HTML / CSS / JS / Images
-           ← streamed back to client
+→ Router
+→ ISP
+→ DNS
+→ Server
+→ HTML / CSS / JS / Images
+← streamed back to client
+
 ```
 
 ### 2.1 Pre‑request checks (very important)
@@ -186,12 +264,14 @@ If found → **network is skipped entirely**.
 ### 3.2 DNS lookup flow
 
 ```
+
 Browser
- → Router
-   → ISP resolver
-     → Root DNS
-       → TLD DNS (.com)
-         → Authoritative DNS (google.com)
+→ Router
+→ ISP resolver
+→ Root DNS
+→ TLD DNS (.com)
+→ Authoritative DNS (google.com)
+
 ```
 
 - Result is cached at multiple layers
@@ -210,9 +290,11 @@ Browser
 ### 4.1 TCP 3‑Way Handshake (Guaranteed Delivery)
 
 ```
-Client  →  SYN
-Server  →  SYN + ACK
-Client  →  ACK
+
+Client → SYN
+Server → SYN + ACK
+Client → ACK
+
 ```
 
 Purpose:
@@ -250,13 +332,15 @@ After this:
 ### 6.1 Client → Server Data Flow
 
 ```
+
 Client
- → Router
-   → ISP
-     → DNS
-       → Server
-         → HTML / CSS / JS / Images
-           ← streamed back to client
+→ Router
+→ ISP
+→ DNS
+→ Server
+→ HTML / CSS / JS / Images
+← streamed back to client
+
 ```
 
 ### 6.2 Browser Pre‑Request Checks
@@ -272,8 +356,10 @@ If found → **network call skipped**
 ### 6.3 HTTP request
 
 ```
+
 GET /index.html HTTP/1.1
 Host: example.com
+
 ```
 
 ### 6.4 Response streaming (important correction)
@@ -302,7 +388,9 @@ Correct mental model:
 You can inspect this at:
 
 ```
+
 DevTools → Network → Timing → Queueing
+
 ```
 
 This delay appears as **Resource Scheduling Queueing**
@@ -315,7 +403,9 @@ This delay appears as **Resource Scheduling Queueing**
 You can see this in:
 
 ```
+
 DevTools → Network → Timing → Queueing
+
 ```
 
 ---
@@ -328,13 +418,15 @@ DevTools → Network → Timing → Queueing
 - Tokens → Nodes → **DOM Tree**
 
 ```
+
 html
- ├── head
- │    ├── link
- │    └── script
- └── body
-      └── div
-           └── p
+├── head
+│ ├── link
+│ └── script
+└── body
+└── div
+└── p
+
 ```
 
 ---
@@ -450,8 +542,10 @@ Changing these triggers **repaint only**:
 Best for animations:
 
 ```
+
 transform
 opacity
+
 ```
 
 ---
@@ -465,8 +559,10 @@ opacity
 | LCP    | Largest content       |
 | TTI    | Page usable           |
 
-**Beginner Note:** These are key points in loading a webpage. FCP is when you first see something on screen.
-**Advanced Note:** Use Chrome DevTools or Web Vitals to measure these. Aim for LCP under 2.5s for good UX.
+**Note:**
+
+1. These are key points in loading a webpage. FCP is when you first see something on screen.
+2. Use Chrome DevTools or Web Vitals to measure these. Aim for LCP under 2.5s for good UX.
 
 ---
 
@@ -480,7 +576,7 @@ opacity
 | TLS Required          | ❌       | ❌                   | ✅         |
 | Mobile Friendly       | ❌       | ⚠️                   | ✅         |
 
-**Advanced Note:** HTTP/3 uses QUIC over UDP for faster, more reliable connections, especially on unstable networks like mobile.
+**Note:** HTTP/3 uses QUIC over UDP for faster, more reliable connections, especially on unstable networks like mobile.
 
 ---
 
@@ -503,19 +599,21 @@ opacity
 ## 18. Complete Timeline (Condensed)
 
 ```
+
 Request page
- → DNS
- → TCP
- → TLS
- → HTTP
- → HTML
- → DOM
- → CSSOM
- → JS
- → Render Tree
- → Layout
- → Paint
- → Composite
+→ DNS
+→ TCP
+→ TLS
+→ HTTP
+→ HTML
+→ DOM
+→ CSSOM
+→ JS
+→ Render Tree
+→ Layout
+→ Paint
+→ Composite
+
 ```
 
 ---
@@ -533,7 +631,7 @@ Request page
 
 ---
 
-## 20. Advanced Tips
+## 20. Tips
 
 - Inline critical CSS
 - Defer non‑critical JS
@@ -636,7 +734,7 @@ sequenceDiagram
 ```
 
 **RTT cost:** 1 RTT
-**Advanced Note:** The handshake establishes encrypted communication securely.
+**Note:** The handshake establishes encrypted communication securely.
 
 ---
 
@@ -702,7 +800,7 @@ graph LR
     style Comp fill:orange,stroke:darkred
 ```
 
-**Advanced:** This class diagram compares web protocols and their OSI layer mappings.
+**Note:** This class diagram compares web protocols and their OSI layer mappings.
 
 ---
 
@@ -796,7 +894,7 @@ classDiagram
 
 ### Detailed Breakdown of "How It Works"
 
-| Protocol      | How It Works (Step-by-Step)                     | Advanced Technical Detail                                                           |
+| Protocol      | How It Works (Step-by-Step)                     | Technical Detail                                                                    |
 | :------------ | :---------------------------------------------- | :---------------------------------------------------------------------------------- |
 | **HTTP**      | `TCP Connection` ➔ `Request` ➔ `Response`       | **Stateless:** Each request is independent; uses Cookies/Sessions for state.        |
 | **HTTP/3**    | `UDP Connection` ➔ `QUIC Handshake` ➔ `Streams` | **Zero-RTT:** Reconnecting to a known server requires 0 round trips.                |
@@ -877,9 +975,9 @@ flowchart TD
 
 ---
 
-## 31. Web Architecture Concepts for Advanced Readers
+## 31. Web Architecture Deep Dive
 
-**Advanced Note:** This section bridges the technical pipeline with high-level web architectures, catering to architects and engineers designing scalable systems.
+**Note:** This section bridges the technical pipeline with high-level web architectures, catering to architects and engineers designing scalable systems.
 
 ### 31.1 Client-Server Architecture
 
@@ -923,7 +1021,7 @@ flowchart TD
 
 ---
 
-## References & Further Reading
+## References
 
 - **General Web Fundamentals**
   - MDN Web Docs: [How the Web Works](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/How_the_Web_works)
